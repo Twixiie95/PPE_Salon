@@ -16,5 +16,22 @@ namespace PreambulePPE
         {
             InitializeComponent();
         }
+
+        private void BT_Ajout_Click(object sender, EventArgs e)
+        {
+            
+            try
+            {
+                Salon unSalon = new Salon(TB_Nom.Text, TB_Lieu.Text,DTP_debut.Value, DTP_Fin.Value);
+                unSalon.Save();
+                this.DialogResult = DialogResult.OK;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+
+            }
+            this.DialogResult = DialogResult.OK;
+        }
     }
 }
