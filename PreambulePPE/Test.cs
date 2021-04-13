@@ -34,11 +34,14 @@ namespace PreambulePPE
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
             XFont font = new XFont("Code 128", 60, XFontStyle.Regular);
+            XFont font2 = new XFont("LEMONMILK-Bold", 60, XFontStyle.Regular);
             gfx.DrawString("informations de l'utilisateur", font, XBrushes.Black,
             new XRect(0, 0, page.Width, page.Height),
             XStringFormats.Center);
+            gfx.DrawString("Bonjour",font2, XBrushes.Black,
+            new XRect(0, -150, page.Width, page.Height),
+            XStringFormats.Center);
             const string filename = "BadgeUtilisateur.pdf";
-
             document.Save(filename);
             Process.Start(filename);
         }
