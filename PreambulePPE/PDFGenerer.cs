@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
+using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,8 +21,6 @@ namespace PreambulePPE
         int idSalon = Utilisateur.idSalon;
         public PDFGenerer()
         {
-
-
             InitializeComponent();
             MySqlConnection conn = new MySqlConnection(_connectionString);
             MySqlCommand cmd = new MySqlCommand("select Email from participant where idSalon = '"+idSalon+"'", conn);
@@ -36,10 +35,8 @@ namespace PreambulePPE
         {
             this.DialogResult = DialogResult.Cancel;
         }
-
         private void bt_pdf_Click(object sender, EventArgs e)
         {
-
             MySqlDataAdapter donnee = new MySqlDataAdapter();
             MySqlConnection conn = new MySqlConnection(_connectionString);
             conn.Open();
@@ -50,22 +47,25 @@ namespace PreambulePPE
             string prenom = rdr.GetString(3);
             string nom = rdr.GetString(2);
             string departement = rdr.GetString(4);
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(cb_mail.Text, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(5);
+            XImage qrXimage = qrCodeImage;
             PdfDocument document = new PdfDocument();
             document.Info.Title = prenom+cb_mail.Text;
             PdfPage page = document.AddPage();
             XGraphics gfx = XGraphics.FromPdfPage(page);
             XFont font = new XFont("Code 128", 60, XFontStyle.Regular);
             XFont font2 = new XFont("LEMONMILK-Bold", 60, XFontStyle.Regular);
-            gfx.DrawString(cb_mail.Text, font, XBrushes.Black,
-            new XRect(0, 0, page.Width, page.Height),
-            XStringFormats.Center);
+            gfx.DrawImage(qrXimage, 240,300);
             gfx.DrawString(nom + " " + prenom, font2, XBrushes.Black,
             new XRect(0, -350, page.Width, page.Height),
             XStringFormats.Center);
             gfx.DrawString(departement, font2, XBrushes.Black,
             new XRect(0, -150, page.Width, page.Height),
             XStringFormats.Center);
-            const string filename = "BadgeUtilisateur.pdf";
+            string filename = prenom+nom+"badge.pdf";
             document.Save(filename);
             Process.Start(filename);
         }

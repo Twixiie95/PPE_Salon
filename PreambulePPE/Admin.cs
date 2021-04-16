@@ -112,6 +112,7 @@ namespace PreambulePPE
             this.Hide();
             AjoutSalon FormSalon = new AjoutSalon();
             FormSalon.ShowDialog();
+            this.Show();
         }
 
         private void BT_Refresh_Click(object sender, EventArgs e)
